@@ -1,8 +1,13 @@
 name: ci
-on: push
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
       - run: npm test
