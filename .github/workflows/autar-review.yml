@@ -1,0 +1,26 @@
+name: Autar review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: autar-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  autar-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install the Autar CLI
+        env:
+          AUTAR_API_BASE: https://api.dev.autar.ai
+          AUTAR_CHANNEL: dev
+          AUTAR_INSTALL_DIR: ${{ runner.temp }}/autar
+        run: |
+          curl -fsSL --proto '=https' https://api.dev.autar.ai/install.sh | bash
+          echo "$AUTAR_INSTALL_DIR" >> "$GITHUB_PATH"
+      - name: Review the pull request
+        env:
+          AUTAR_API_BASE: https://api.dev.autar.ai
+          AUTAR_TOKEN: ${{ secrets.AUTAR_TOKEN }}
+        run: autar review
